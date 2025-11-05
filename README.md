@@ -1,266 +1,269 @@
-```markdown
 # DemoBlockChain
 
-DemoBlockChain is a simple, educational blockchain implementation intended to demonstrate core blockchain concepts such as blocks, proof-of-work, transactions, and basic network operations in a compact, easy-to-follow codebase. This repository is designed for learning, experimentation, and demonstration rather than production use.
+A simple blockchain implementation built with Rust and Actix-web, demonstrating core blockchain concepts including block creation, proof-of-work mining, and a RESTful API interface.
 
-## Table of Contents
+## 📋 Table of Contents
 
-- [Project Overview](#project-overview)
-- [Key Features](#key-features)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Running the Demo](#running-the-demo)
-- [Usage Examples](#usage-examples)
-  - [Creating Transactions](#creating-transactions)
-  - [Mining a Block](#mining-a-block)
-  - [Querying the Chain](#querying-the-chain)
-- [Architecture & Concepts](#architecture--concepts)
-  - [Block Structure](#block-structure)
-  - [Proof-of-Work](#proof-of-work)
-  - [Transactions & UTXO / Account Model](#transactions--utxo--account-model)
-- [Tests](#tests)
+- [Overview](#overview)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [How It Works](#how-it-works)
+- [Development](#development)
 - [Contributing](#contributing)
-- [Security](#security)
 - [License](#license)
-- [Contact](#contact)
 
-## Project Overview
+## 🔍 Overview
 
-This project provides a minimal blockchain implementation to illustrate:
+DemoBlockChain is an educational blockchain implementation that showcases the fundamental principles of blockchain technology. Built with Rust for performance and safety, it provides a REST API for interacting with the blockchain, allowing users to add transactions, mine blocks, and view the chain state.
 
-- Block creation and linking via cryptographic hashes
-- A simple proof-of-work (PoW) algorithm
-- Adding and validating transactions
-- Chain validation rules
-- (Optional) simple peer-to-peer or HTTP API demo to interact with the chain
+## ✨ Features
 
-It is intentionally small and readable to make core concepts approachable.
+- **Block Creation**: Create blocks with transaction data
+- **Proof of Work**: Implements mining algorithm with adjustable difficulty
+- **SHA-256 Hashing**: Cryptographic hashing for block integrity
+- **RESTful API**: Easy-to-use HTTP endpoints for blockchain interaction
+- **CORS Support**: Cross-origin resource sharing enabled
+- **Logging**: Comprehensive logging for debugging and monitoring
+- **Transaction Management**: Add and manage transactions before mining
+- **Chain Validation**: Ensures blockchain integrity
 
-## Key Features
+## 🛠 Technology Stack
 
-- Simplified block and transaction models
-- Proof-of-work mining to secure blocks
-- Chain validation and tamper detection
-- Example CLI/API for interacting with the chain
-- Educational comments and clear code flow for learning
+- **Language**: Rust (2024 edition)
+- **Web Framework**: Actix-web 4.11.0
+- **Hashing**: SHA-2 (sha2 crate)
+- **Serialization**: Serde & Serde JSON
+- **CORS**: Actix-cors 0.7.1
+- **Logging**: env_logger 0.11.8 & log 0.4.28
+- **Time Management**: Chrono 0.4.42
+- **Environment Variables**: dotenv 0.15.0
 
-## Getting Started
+## 📁 Project Structure
 
-These instructions will help you run the demo locally.
-
-### Prerequisites
-
-- A modern operating system (Linux, macOS, Windows)
-- Git
-- A language runtime (the repository may include implementations in one or more languages; check the code):
-  - Node.js (if JavaScript/TypeScript implementation)
-  - Python 3.x (if Python implementation)
-  - Go 1.18+ (if Go implementation)
-- Recommended: a code editor (VS Code, IntelliJ, etc.)
-
-> Note: Look at the repository root and top-level folders to see which language is used. Follow the language-specific instructions in the folder readme (if present).
-
-### Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/raunit-dev/DemoBlockChain.git
-cd DemoBlockChain
+```
+DemoBlockChain/
+├── src/
+│   └── main.rs          # Main application code
+├── Cargo.toml           # Rust dependencies and project metadata
+├── Cargo.lock           # Locked dependency versions
+├── .env.example         # Example environment configuration
+├── .gitignore          # Git ignore rules
+└── README.md           # Project documentation
 ```
 
-Follow the language-specific steps below (pick the one that matches the code in this repo):
+## 📋 Prerequisites
 
-- Node.js / JavaScript / TypeScript:
-  ```bash
-  cd js || cd node
-  npm install
-  # or
-  yarn
-  ```
+Before running this project, ensure you have the following installed:
 
-- Python:
-  ```bash
-  cd python
-  python -m venv .venv
-  source .venv/bin/activate   # macOS / Linux
-  .venv\Scripts\activate      # Windows (PowerShell)
-  pip install -r requirements.txt
-  ```
+- **Rust**: Version 1.70 or higher
+  - Install from [rustup.rs](https://rustup.rs/)
+- **Cargo**: Comes with Rust installation
+- **Git**: For cloning the repository
 
-- Go:
-  ```bash
-  cd go
-  go mod download
-  ```
+## 🚀 Installation
 
-If the repository provides a single-language implementation, run the commands in that language's top-level folder.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/raunit-dev/DemoBlockChain.git
+   cd DemoBlockChain
+   ```
 
-### Running the Demo
+2. **Install dependencies**
+   ```bash
+   cargo build
+   ```
 
-Start the node / demo server or CLI as appropriate:
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-- Node.js:
-  ```bash
-  npm start
-  # or
-  node index.js
-  ```
+## ⚙️ Configuration
 
-- Python:
-  ```bash
-  python main.py
-  ```
+Create a `.env` file based on `.env.example`:
 
-- Go:
-  ```bash
-  go run ./cmd/demo
-  ```
-
-After starting, you should see output indicating genesis block creation and an RPC/HTTP endpoint or simple CLI prompt for interacting with the chain.
-
-## Usage Examples
-
-Below are typical actions you can try once the demo is running.
-
-### Creating Transactions
-
-If the demo exposes an HTTP API (common endpoints shown as examples):
-
-```bash
-curl -X POST http://localhost:3000/transactions/new \
-  -H "Content-Type: application/json" \
-  -d '{"sender":"address1","recipient":"address2","amount":5}'
+```env
+# Server configuration
+RUST_LOG=info
+PORT=8080
 ```
 
-Or using CLI:
+You can adjust the following settings:
+- `RUST_LOG`: Logging level (trace, debug, info, warn, error)
+- `PORT`: Server port (default: 8080)
 
-```bash
-# Example CLI command - replace with actual command in this repo
-./demo-cli send --from address1 --to address2 --amount 5
+## 💻 Usage
+
+### Running the Application
+
+1. **Development mode**
+   ```bash
+   cargo run
+   ```
+
+2. **Production build**
+   ```bash
+   cargo build --release
+   ./target/release/rust-back
+   ```
+
+3. **With logging**
+   ```bash
+   RUST_LOG=debug cargo run
+   ```
+
+The server will start on `http://localhost:8080` (or your configured port).
+
+## 🌐 API Endpoints
+
+### 1. Get Blockchain
+```http
+GET /blockchain
+```
+Returns the entire blockchain with all blocks.
+
+**Response:**
+```json
+{
+  "chain": [...],
+  "length": 3
+}
 ```
 
-### Mining a Block
-
-Trigger mining to add a new block to the chain (this will run proof-of-work):
-
-```bash
-curl http://localhost:3000/mine
+### 2. Add Transaction
+```http
+POST /transaction
+Content-Type: application/json
 ```
 
-Or CLI:
-
-```bash
-./demo-cli mine
+**Request Body:**
+```json
+{
+  "sender": "Alice",
+  "recipient": "Bob",
+  "amount": 50
+}
 ```
 
-### Querying the Chain
-
-Get the full blockchain:
-
-```bash
-curl http://localhost:3000/chain
+**Response:**
+```json
+{
+  "message": "Transaction added successfully"
+}
 ```
 
-Check chain validity:
+### 3. Mine Block
+```http
+POST /mine
+```
+Mines a new block with pending transactions.
 
-```bash
-curl http://localhost:3000/validate
+**Response:**
+```json
+{
+  "message": "Block mined successfully",
+  "block": {...}
+}
 ```
 
-Adjust URLs and commands to match the server/CLI implemented in this repository.
+### 4. Get Latest Block
+```http
+GET /latest
+```
+Returns the most recent block in the chain.
 
-## Architecture & Concepts
+### 5. Validate Chain
+```http
+GET /validate
+```
+Checks if the blockchain is valid.
 
-This project follows a minimal architecture intended for clarity.
+**Response:**
+```json
+{
+  "valid": true
+}
+```
+
+## 🔧 How It Works
 
 ### Block Structure
+Each block contains:
+- **Index**: Position in the blockchain
+- **Timestamp**: When the block was created
+- **Transactions**: List of transactions in the block
+- **Proof**: Nonce value from proof-of-work
+- **Previous Hash**: Hash of the previous block
+- **Hash**: Current block's hash
 
-A typical block contains:
+### Proof of Work
+The mining algorithm:
+1. Starts with a nonce of 0
+2. Calculates hash of block data + nonce
+3. Checks if hash meets difficulty requirement (leading zeros)
+4. Increments nonce and repeats until valid hash found
 
-- index: position in the chain
-- timestamp: time of creation
-- transactions: list of transactions included in the block
-- previousHash: hash of the previous block
-- nonce: number used for proof-of-work
-- hash: SHA-256 (or other) hash of the block contents
+### Chain Validation
+Validates the blockchain by:
+1. Checking each block's hash is correct
+2. Verifying each block's previous_hash matches the previous block
+3. Ensuring proof-of-work is valid for each block
 
-### Proof-of-Work
+## 👨‍💻 Development
 
-A simple PoW algorithm is used to make mining moderately expensive. The miner finds a nonce so that the block hash has a specific number of leading zeros (difficulty). Difficulty is adjustable for demonstration.
-
-### Transactions & UTXO / Account Model
-
-This demo uses a simplified transaction model. It may either:
-
-- Use an account/balance model (sender balance tracked), or
-- Use a UTXO-like model (unspent transaction outputs) depending on the implementation files.
-
-Refer to the transaction code (look for files named transaction, tx, wallet, or account) for details.
-
-## Tests
-
-If the repository contains tests, run them using the appropriate command:
-
-- Node.js (Jest/Mocha):
-  ```bash
-  npm test
-  ```
-
-- Python (pytest/unittest):
-  ```bash
-  pytest
-  ```
-
-- Go:
-  ```bash
-  go test ./...
-  ```
-
-Ensure tests are present in the repo; if not, see the tests/ or spec/ directories for examples to add.
-
-## Contributing
-
-Contributions, issues, and feature requests are welcome!
-
-- Fork the repository
-- Create a feature branch (git checkout -b feature/my-feature)
-- Commit your changes (git commit -m "Add feature")
-- Push to the branch (git push origin feature/my-feature)
-- Open a Pull Request describing your changes
-
-Please follow these guidelines:
-
-- Keep changes small and focused
-- Add tests for new behavior
-- Document non-trivial design decisions in code comments or a DESIGN.md
-
-## Security
-
-This project is for demonstration purposes only. It is not production hardened.
-
-- Do not use this code for real monetary systems
-- Keys and wallets in demos are not secure
-- No guarantees about consensus safety, fork handling, or networking security
-
-If you discover security vulnerabilities, please open an issue or contact the maintainer privately if responsible disclosure is required.
-
-## License
-
-Specify the license used for this repository. If none is present, add a license file (e.g., MIT).
-
-Example:
-```
-MIT License
-See LICENSE file for details.
+### Running Tests
+```bash
+cargo test
 ```
 
-## Contact
-
-Repository: https://github.com/raunit-dev/DemoBlockChain
-
-Maintainer / Author: raunit-dev
-
-If you want changes to this README (specific phrasing, more or fewer sections, or language-specific instructions), tell me exactly what to include and I'll update the file.
+### Code Formatting
+```bash
+cargo fmt
 ```
+
+### Linting
+```bash
+cargo clippy
+```
+
+### Watch Mode (with cargo-watch)
+```bash
+cargo install cargo-watch
+cargo watch -x run
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is open source and available for educational purposes.
+
+## 👤 Author
+
+**raunit-dev**
+- GitHub: [@raunit-dev](https://github.com/raunit-dev)
+
+## 🙏 Acknowledgments
+
+- Built as a learning project to understand blockchain fundamentals
+- Inspired by the original Bitcoin whitepaper
+- Uses Rust for memory safety and performance
+
+---
+
+⭐ Star this repository if you found it helpful!
